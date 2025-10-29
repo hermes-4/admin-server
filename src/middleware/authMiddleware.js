@@ -1,6 +1,6 @@
 import Admin from "../models/adminModel.js"
 import jwt from "jsonwebtoken" 
-export const aegis = async (req , res , next ) => {
+export const verifyToken = async (req , res , next ) => {
     let token
     if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")){
         try {
@@ -15,10 +15,10 @@ export const aegis = async (req , res , next ) => {
             req.admin = await Admin.findById(decoded.id).select("-password")
             next()
         } catch (error) {
-            res.status(401).json({ message: "Unauthorized" })
+            res.status(401).json({ message: "Unauthorized: wrong token", error: error.message })
         }
     }
     if (!token){
-        res.status(401).json({ message: "Unauthorized" })
+        res.status(401).json({ message: "Unauthorized: no token", error: error.message })
     }
 }
