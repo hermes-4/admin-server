@@ -21,11 +21,11 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-app.use("/api/admin", adminAuthRoutes);
+app.use("/v1/admin/auth", adminAuthRoutes);
 
 app.get("/", (req, res) => {
   res.send("Admin auth API is running ");
 });
 
-const PORT = 5000;
+const PORT = process.env.PORT || 3030;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
