@@ -1,5 +1,5 @@
 import Admin from "../models/adminModel.js";
-import { generateToken } from "../utils/generateToken.js";
+import { generateAccessToken, generateRefreshToken } from "../utils/generateToken.js";
 
 export const registerAdmin = async (req , res ) => {
   try {
@@ -22,24 +22,43 @@ export const registerAdmin = async (req , res ) => {
 };
 
 
-export const loginAdmin = async (req , res ) => {
-  try {
-    const { username, password } = req.body;
-    const admin = await Admin.findOne({ username });
-    if (!admin) {
-      return res.status(400).json({ message: "Invalid username" });
-    }
-   
-    const isMatch = await admin.matchPassword(password);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid password" });
-    }
+export const loginAdmin = async (req, res) => {
+  const { username, password } = req.body;
 
-    return res.status(200).json({ message: "Login successful", _id: admin._id, username: username, token: generateToken(admin._id) });
-  } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
-  }
+  const admin = await Admin.findOne({ username });
+  if (!admin) return res.status(400).json({ message: "Invalid username" });
+
+  const match = await admin.matchPassword(password);
+  if (!match) return res.status(400).json({ message: "Invalid password" });
+  const accessToken = generateAccessToken(admin._id);
+  const refreshToken = generateRefreshToken(admin._id);
+
+  res
+    .cookie("accessToken", accessToken, { httpOnly: true, sameSite: "lax", maxAge: 15 * 60 * 1000 })
+    .cookie("refreshToken", refreshToken, { httpOnly: true, sameSite: "lax", maxAge: 24 * 60 * 60 * 1000 })
+    .json({ message: "Login successful", username: admin.username });
 };
+
+
+
+// export const loginAdmin = async (req , res ) => {
+//   try {
+//     const { username, password } = req.body;
+//     const admin = await Admin.findOne({ username });
+//     if (!admin) {
+//       return res.status(400).json({ message: "Invalid username" });
+//     }
+   
+//     const isMatch = await admin.matchPassword(password);
+//     if (!isMatch) {
+//       return res.status(400).json({ message: "Invalid password" });
+//     }
+
+//     return res.status(200).json({ message: "Login successful", _id: admin._id, username: username, token: generateToken(admin._id) });
+//   } catch (error) {
+//     res.status(500).json({ message: "Server Error", error });
+//   }
+// };
 
 
 
@@ -66,4 +85,28 @@ export const getAllAdmins = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Server Error", error });
   }
+};
+
+
+export const refreshAccessToken = async (req, res) => {
+  const refresh = req.cookies.refreshToken;
+  if (!refresh) return res.status(401).json({ message: "No refresh token" });
+
+  try {
+    const decoded = jwt.verify(refresh, process.env.JWT_SECRET);
+    const newAccess = generateAccessToken(decoded.id);
+    return res
+      .cookie("accessToken", newAccess, { httpOnly: true, sameSite: "lax", maxAge: 15 * 60 * 1000 })
+      .json({ message: "New access token issued" });
+  } catch {
+    return res.status(401).json({ message: "Token expired. Login again." });
+  }
+};
+ 
+
+export const logoutAdmin = (req, res) => {
+  res
+    .clearCookie("accessToken")
+    .clearCookie("refreshToken")
+    .json({ message: "Logged out" });
 };
