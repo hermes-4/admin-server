@@ -1,11 +1,9 @@
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
+export const generateAccessToken = (id, role = "admin") => {
+  return jwt.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: "15m" });
+};
 
-export const generateToken = (id)=>{
-      const secret = process.env.JWT_SECRET
-            if (!secret) {
-                throw new Error("Server misconfiguration: JWT_SECRET not set")}
-    return jwt.sign({ id }, secret, {
-        expiresIn: "24h",
-    });
-}
+export const generateRefreshToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "24h" });
+};
