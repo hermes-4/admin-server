@@ -16,4 +16,5 @@ router.post('/logout', logoutAdmin);
 router.get('/admins', verifyAccessToken, getAllAdmins);
 router.delete('/delete/:id', verifyAccessToken, deleteAdmin);
 
+
 export default router;

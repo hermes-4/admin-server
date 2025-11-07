@@ -1,13 +1,15 @@
-// src/server.js
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
-import adminAuthRoutes from "./routes/adminAuthRoutes.js";
+import adminAuthRoutes from "./routes/admin.auth.routes.js";
+import categoryRoutes from "./routes/category.routes.js";
+import productRoutes from "./routes/product.routes.js";
+import donationRoutes from "./routes/donation.routes.js";
+import contactInfoRoutes from "./routes/contactInfo.routes.js";
 
 dotenv.config();
 
-const app = express();
 app.use(cors());
 app.use(express.json());
 
@@ -22,9 +24,13 @@ mongoose
   .catch((err) => console.error("MongoDB connection error:", err));
 
 app.use("/v1/admin/auth", adminAuthRoutes);
+app.use("/v1/admin/categories", categoryRoutes);
+app.use("/v1/admin/products", productRoutes);
+app.use("/v1/admin/donation_responses", donationRoutes);
+app.use("/v1/admin/contact_info", contactInfoRoutes);
 
 app.get("/", (req, res) => {
-  res.send("Admin auth API is running ");
+  res.send(`Admin auth API is running on ${process.env.PORT}`);
 });
 
 const PORT = process.env.PORT || 3030;
