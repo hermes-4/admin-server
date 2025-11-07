@@ -9,6 +9,7 @@ import donationRoutes from "./routes/donation.routes.js";
 import contactInfoRoutes from "./routes/contactInfo.routes.js";
 
 dotenv.config();
+const app = express();
 
 app.use(cors());
 app.use(express.json());

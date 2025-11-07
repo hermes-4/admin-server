@@ -1,4 +1,4 @@
-import ContactInfo from "../models/ContactInfo.js";
+import ContactInfo from "../models/contactInfoModel.js";
 
 export const getContactInfo = async (req, res) => {
   try {
