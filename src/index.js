@@ -7,6 +7,7 @@ import categoryRoutes from "./routes/category.routes.js";
 import productRoutes from "./routes/product.routes.js";
 import donationRoutes from "./routes/donation.routes.js";
 import contactInfoRoutes from "./routes/contactInfo.routes.js";
+import heroRoutes from "./routes/hero.routes.js";
 
 dotenv.config();
 const app = express();
@@ -29,6 +30,7 @@ app.use("/v1/admin/categories", categoryRoutes);
 app.use("/v1/admin/products", productRoutes);
 app.use("/v1/admin/donation_responses", donationRoutes);
 app.use("/v1/admin/contact_info", contactInfoRoutes);
+app.use("/v1/admin/hero", heroRoutes);
 
 app.get("/", (req, res) => {
   res.send(`Admin auth API is running on ${process.env.PORT}`);
