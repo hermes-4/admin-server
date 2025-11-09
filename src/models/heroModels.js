@@ -1,13 +1,15 @@
 import mongoose from "mongoose";
 
-const heroSchema = new mongoose.Schema({
-  page: { type: String, required: true, unique: true }, 
+const heroSlideSchema = new mongoose.Schema({
   title: { type: String, required: true },
   subtitle: { type: String, required: true },
-  images: {
-    type: [String],
-    required: true
-  }
+  images: { type: [String], required: true },
+});
+
+const heroSchema = new mongoose.Schema({
+  page: { type: String, required: true, unique: true },
+  slides: [heroSlideSchema], 
 }, { timestamps: true });
 
-export default mongoose.model("Hero", heroSchema);
+const Hero = mongoose.model("Hero", heroSchema);
+export default Hero;
