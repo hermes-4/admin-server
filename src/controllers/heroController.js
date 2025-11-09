@@ -2,30 +2,30 @@ import Hero from "../models/heroModels.js";
 
 export const getHero = async (req, res) => {
   try {
-    const { page } = req.query; 
+    const { page } = req.query;
     const hero = await Hero.findOne({ page });
-    res.json(hero);
+
+    res.json(hero || { page, slides: [] });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
+
 export const updateHero = async (req, res) => {
   try {
-    const { page, title, subtitle, images } = req.body;
+    const { page, slides } = req.body;
 
-    if (!page || !title || !subtitle || !images?.length) {
-      return res.status(400).json({ message: "All fields are required" });
+    if (!page || !slides?.length) {
+      return res.status(400).json({ message: "Page and slides are required" });
     }
 
     let hero = await Hero.findOne({ page });
 
     if (!hero) {
-      hero = await Hero.create({ page, title, subtitle, images });
+      hero = await Hero.create({ page, slides });
     } else {
-      hero.title = title;
-      hero.subtitle = subtitle;
-      hero.images = images;
+      hero.slides = slides;
       await hero.save();
     }
 
@@ -34,3 +34,4 @@ export const updateHero = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
