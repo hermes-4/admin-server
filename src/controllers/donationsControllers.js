@@ -16,7 +16,7 @@ export const createDonation = async (req, res) => {
   try {
     const donation = new Donation(req.body);
     await donation.save();
-    res.status(201).json(donation);
+    res.status(201).json({message: "Donation created successfully", transactionId: donation._id });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

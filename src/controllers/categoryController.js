@@ -10,15 +10,31 @@ export const getCategories = async (req, res) => {
   }
 }
 
+export const getCategoryById = async (req, res) => {
+  try {
+    const category = await Category.findById(req.params.id);
+    if (!category) return res.status(404).json({ error: "Category not found" });
+    res.json(category);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
 export const createCategory = async (req, res) => {
   try {
+    if (Array.isArray(req.body.categories)) {
+      const created = await Category.insertMany(req.body.categories);
+      return res.status(201).json(created);
+    }
+
     const category = new Category(req.body);
     await category.save();
     res.status(201).json(category);
+
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
-}
+};
 
 export const updateCategory = async (req, res) => {
   try {
