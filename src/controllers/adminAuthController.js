@@ -96,9 +96,17 @@ export const refreshAccessToken = async (req, res) => {
     const decoded = jwt.verify(refresh, process.env.JWT_SECRET);
     const newAccess = generateAccessToken(decoded.id);
     return res
-      .cookie("accessToken", newAccess, { httpOnly: true, sameSite: "lax", maxAge: 15 * 60 * 1000 })
-      .json({ message: "New access token issued" });
-  } catch {
+  .cookie("accessToken", newAccess, { 
+    httpOnly: true, 
+    sameSite: "lax", 
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 15 * 60 * 1000 
+  })
+  .json({ 
+    message: "New access token issued", 
+    accessToken: newAccess 
+  });
+ } catch {
     return res.status(401).json({ message: "Token expired. Login again." });
   }
 };
