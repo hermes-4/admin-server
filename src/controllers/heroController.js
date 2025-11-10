@@ -20,6 +20,11 @@ export const updateHero = async (req, res) => {
       return res.status(400).json({ message: "Page and slides are required" });
     }
 
+    const invalidSlide = slides.find(slide => !slide.images || slide.images.length === 0);
+    if (invalidSlide) {
+      return res.status(400).json({ message: "Each slide must have at least one image" });
+    }
+
     let hero = await Hero.findOne({ page });
 
     if (!hero) {

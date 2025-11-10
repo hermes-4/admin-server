@@ -1,4 +1,4 @@
-import contactForm from "../models/contactForm";
+import contactForm from "../models/contactForm.js";
 
 export const createFormResponse = async (req, res) => {
   try {
