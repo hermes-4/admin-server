@@ -10,10 +10,25 @@ import contactInfoRoutes from "./routes/contactInfo.routes.js";
 import contactFormRoutes from "./routes/contact.form.routes.js";
 import heroRoutes from "./routes/hero.routes.js";
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://thebalancechurch.vercel.app/",
+];
 dotenv.config();
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true
+  })
+);
 app.use(express.json());
 
 const mongoUri = process.env.MONGO_URI;
