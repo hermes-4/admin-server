@@ -11,6 +11,8 @@ import contactFormRoutes from "./routes/contact.form.routes.js";
 import heroRoutes from "./routes/hero.routes.js";
 import galleryRoutes from "./routes/gallery.routes.js";
 import statsRoutes from "./routes/stats.routes.js";
+import eventsRoutes from "./routes/events.routes.js";
+import monthlyStats from "./routes/stats.monthly.routes.js";
 
 const allowedOrigins = [
   "http://localhost:3000",
@@ -51,8 +53,9 @@ app.use("/v1/admin/contact_info", contactInfoRoutes);
 app.use("/v1/admin/hero", heroRoutes);
 app.use("/v1/admin/contact_forms", contactFormRoutes);
 app.use("v1/admin/stats", statsRoutes);
-app.use("v1/admin/stats", );
+app.use("v1/admin/stats/monthly", monthlyStats );
 app.use("/v1/admin/gallery", galleryRoutes);
+app.use("/v1/admin/events", eventsRoutes);
 
 app.get("/", (req, res) => {
   res.send(`Admin auth API is running on ${process.env.PORT}`);
