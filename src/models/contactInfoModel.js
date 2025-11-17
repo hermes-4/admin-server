@@ -10,4 +10,6 @@ const contactInfoSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+
+
 export default mongoose.model("ContactInfo", contactInfoSchema);

@@ -21,12 +21,7 @@ export const getCategoryById = async (req, res) => {
 
 export const createCategory = async (req, res) => {
   try {
-    if (Array.isArray(req.body.categories)) {
-      const created = await Category.insertMany(req.body.categories);
-      return res.status(201).json(created);
-    }
-
-    const category = new Category(req.body);
+       const category = new Category(req.body);
     await category.save();
     res.status(201).json(category);
   } catch (err) {
