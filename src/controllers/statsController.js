@@ -12,6 +12,12 @@ export const getStats = async (req, res) => {
       Message.countDocuments(),
       Product.countDocuments(),
     ]);
+    res.status(200).json({
+      totalEvents: events,
+      totalDonations: donations,
+    totalMessages: messages,
+      totalProducts: products,
+    })
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
