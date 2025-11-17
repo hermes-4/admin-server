@@ -9,6 +9,8 @@ import donationRoutes from "./routes/donation.routes.js";
 import contactInfoRoutes from "./routes/contactInfo.routes.js";
 import contactFormRoutes from "./routes/contact.form.routes.js";
 import heroRoutes from "./routes/hero.routes.js";
+import galleryRoutes from "./routes/gallery.routes.js";
+import statsRoutes from "./routes/stats.routes.js";
 
 const allowedOrigins = [
   "http://localhost:3000",
@@ -26,7 +28,7 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true
+    credentials: true,
   })
 );
 app.use(express.json());
@@ -48,6 +50,9 @@ app.use("/v1/admin/donation_responses", donationRoutes);
 app.use("/v1/admin/contact_info", contactInfoRoutes);
 app.use("/v1/admin/hero", heroRoutes);
 app.use("/v1/admin/contact_forms", contactFormRoutes);
+app.use("v1/admin/stats", statsRoutes);
+app.use("v1/admin/stats", );
+app.use("/v1/admin/gallery", galleryRoutes);
 
 app.get("/", (req, res) => {
   res.send(`Admin auth API is running on ${process.env.PORT}`);
