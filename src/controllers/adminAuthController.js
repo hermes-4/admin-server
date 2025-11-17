@@ -25,25 +25,52 @@ export const registerAdmin = async (req, res) => {
   }
 };
 
+
 export const loginAdmin = async (req, res) => {
-  const { username, password } = req.body;
+  try {
+    const { username, password } = req.body;
 
-  const admin = await Admin.findOne({ username });
-  if (!admin) return res.status(400).json({ message: "Invalid username" });
+    if (!username || !password) {
+      return res.status(400).json({ message: "Username and password are required" });
+    }
 
-  const match = await admin.matchPassword(password);
-  if (!match) return res.status(400).json({ message: "Invalid password" });
-  const accessToken = generateAccessToken(admin._id);
-  const refreshToken = generateRefreshToken(admin._id);
+    const admin = await Admin.findOne({ username });
+    if (!admin) {
+      return res.status(400).json({ message: "Invalid username or password" });
+    }
 
-  res
-     .cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    })
-    .json({ accessToken });
+    const match = await admin.matchPassword(password);
+    if (!match) {
+      return res.status(400).json({ message: "Invalid username or password" });
+    }
+
+    const accessToken = generateAccessToken(admin._id);
+    const refreshToken = generateRefreshToken(admin._id);
+
+    res
+      .cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 7 * 24 * 60 * 60 * 1000, 
+      })
+      .status(200)
+      .json({
+        message: "Login successful",
+        accessToken,
+        admin: {
+          id: admin._id,
+          username: admin.username,
+        },
+      });
+  } catch (error) {
+    // console.error("Login error:", error);
+    return res.status(500).json({
+      message: "Internal server error. Please try again later.",
+    });
+  }
 };
+
 
 export const deleteAdmin = async (req, res) => {
   try {
